@@ -1,0 +1,6 @@
+version: "1.0"
+name: "CodeReviewer-AI-Env"
+description: "A real-world code review environment for AI agents."
+entrypoint: "server.app:app"
+env_vars:
+  TASK_ID: "easy"
