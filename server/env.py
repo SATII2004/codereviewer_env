@@ -29,11 +29,10 @@ class CodeReviewEnv:
 
         if action.action_type == "view_file":
             obs.file_content = task['content']
-            reward = 0.1 # Small reward for exploring
+            reward = 0.1 
         
         elif action.action_type == "submit_review":
             done = True
-            # Logic: If they request changes on the right file, they win
             if action.verdict == "request_changes" and task['file'] in (action.comment or ""):
                 reward = 1.0
             else:

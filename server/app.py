@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from server.env import CodeReviewEnv
 from models import CodeAction
@@ -18,3 +19,10 @@ async def step(action: CodeAction):
 @app.get("/state")
 async def state():
     return {"status": "running", "step": env_instance.step_count}
+
+def main():
+    """Entry point for the server script."""
+    uvicorn.run("server.app:app", host="0.0.0.0", port=7860, reload=False)
+
+if __name__ == "__main__":
+    main()
