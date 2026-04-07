@@ -11,7 +11,7 @@ API_KEY = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or "sk-dummy"
 
 # 2. Environment Connection Logic
 # 0.0.0.0:8000 is the internal address inside your Docker container
-BASE_URL = "http://0.0.0.0:8000"
+BASE_URL = "http://0.0.0.0:7860"
 
 client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 

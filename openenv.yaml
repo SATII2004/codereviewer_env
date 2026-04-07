@@ -2,5 +2,7 @@ version: "1.0"
 name: "CodeReviewer-AI-Env"
 description: "A real-world code review environment for AI agents."
 entrypoint: "server.app:app"
+# Update the port here too
+port: 7860
 env_vars:
   TASK_ID: "easy"
