@@ -3,9 +3,9 @@ import os
 import httpx
 from openai import OpenAI
 
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+API_BASE_URL = os.getenv("API_BASE_URL")
+API_KEY = os.getenv("API_KEY") or os.getenv("HF_TOKEN")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or "sk-dummy"
 
 BASE_URL = "http://0.0.0.0:7860"
 
@@ -25,18 +25,31 @@ async def run_inference():
             
             for step in range(1, 3):
                 steps_taken = step
-                action_type = "view_file" if step == 1 else "submit_review"
+                
+                prompt = f"Review this code: {obs.get('file_content', 'No content yet')}. PR: {obs['pr_description']}. Files: {obs['current_files']}. What is your next action? Reply with 'view_file' or 'submit_review'."
+                
+                completion = client.chat.completions.create(
+                    model=MODEL_NAME,
+                    messages=[
+                        {"role": "system", "content": "You are a Senior Engineer. Help review this code."},
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                response = completion.choices[0].message.content.lower()
+
+                action_type = "view_file" if "view" in response else "submit_review"
                 
                 action_data = {
                     "action_type": action_type,
                     "file_path": "app.py",
                     "verdict": "request_changes" if action_type == "submit_review" else None,
-                    "comment": "Found bug in app.py" if action_type == "submit_review" else None
+                    "comment": "Reviewing for security issues" if action_type == "submit_review" else None
                 }
 
                 step_resp = await http_client.post(f"{BASE_URL}/step", json=action_data)
                 result = step_resp.json()
                 
+                obs = result["observation"]
                 reward = result["reward"]
                 done = result["done"]
                 rewards.append(reward)
