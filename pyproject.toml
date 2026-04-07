@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codereviewer_env"
+version = "0.1.0"
+description = "A real-world code review environment for AI agents."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openenv-core",
+    "openai",
+    "python-multipart",
+    "httpx"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["server*", "models*"]
