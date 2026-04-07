@@ -15,7 +15,8 @@ dependencies = [
     "openenv-core",
     "openai",
     "python-multipart",
-    "httpx"
+    "httpx",
+    "uv"
 ]
 
 [project.scripts]
