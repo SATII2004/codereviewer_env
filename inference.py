@@ -3,7 +3,6 @@ import os
 import httpx
 from openai import OpenAI
 
-
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 API_KEY = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or "sk-dummy"
@@ -14,7 +13,6 @@ client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 
 async def run_inference():
     async with httpx.AsyncClient() as http_client:
-        
         print(f"[START] task=easy env=codereviewer model={MODEL_NAME}", flush=True)
         
         try:
@@ -23,8 +21,10 @@ async def run_inference():
             obs = resp_data["observation"]
             
             rewards = []
+            steps_taken = 0
             
             for step in range(1, 3):
+                steps_taken = step
                 action_type = "view_file" if step == 1 else "submit_review"
                 
                 action_data = {
@@ -46,12 +46,12 @@ async def run_inference():
                 if done: 
                     break
 
-            total_score = sum(rewards)
-            final_score = min(max(total_score / 1.1, 0.0), 1.0) 
+            total_reward = sum(rewards)
+            final_score = min(max(total_reward / 1.1, 0.0), 1.0)
             success = "true" if final_score >= 0.5 else "false"
             
             rewards_str = ",".join([f"{r:.2f}" for r in rewards])
-            print(f"[END] success={success} steps={len(rewards)} score={final_score:.2f} rewards={rewards_str}", flush=True)
+            print(f"[END] success={success} steps={steps_taken} score={final_score:.2f} rewards={rewards_str}", flush=True)
 
         except Exception as e:
             print(f"Error during inference: {e}")
