@@ -18,8 +18,7 @@ async def run_task(http_client, task_id):
         rewards = []
         
         for step in range(1, 3):
-            # Mandatory Proxy API Call
-            prompt = f"Review code for task {task_id}. Files: {obs['current_files']}. Content: {obs.get('file_content')}. Respond with 'view' or 'fix'."
+            prompt = f"Task: {task_id}. Files: {obs['current_files']}. Action?"
             completion = client.chat.completions.create(
                 model=MODEL_NAME,
                 messages=[{"role": "user", "content": prompt}]
@@ -40,10 +39,12 @@ async def run_task(http_client, task_id):
             print(f"[STEP] step={step} action={action_type} reward={reward:.2f} done={str(result['done']).lower()} error=null", flush=True)
             if result["done"]: break
 
-        score = sum(rewards) / 1.1
-        print(f"[END] success=true steps={len(rewards)} score={score:.2f} rewards={','.join([f'{r:.2f}' for r in rewards])}", flush=True)
+        final_raw_score = sum(rewards) / 1.1
+        clamped_score = min(max(final_raw_score, 0.01), 0.99)
+        
+        print(f"[END] success=true steps={len(rewards)} score={clamped_score:.3f} rewards={','.join([f'{r:.2f}' for r in rewards])}", flush=True)
     except Exception as e:
-        print(f"[END] success=false steps=0 score=0.00 rewards=0.00", flush=True)
+        print(f"[END] success=false steps=0 score=0.01 rewards=0.01", flush=True)
 
 async def main():
     async with httpx.AsyncClient() as http_client:

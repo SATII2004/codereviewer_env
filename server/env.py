@@ -32,17 +32,19 @@ class CodeReviewEnv:
     async def step(self, action):
         self.step_count += 1
         task = self.tasks[self.current_task_id]
-        reward = 0.0
+        
+        reward = 0.05 
         done = False
         
         if action.action_type == "view_file":
-            reward = 0.1
+            reward = 0.15 
             observation = {"file_content": task['content'], "pr_description": "Reviewing...", "current_files": [task['file']]}
         elif action.action_type == "submit_review":
             done = True
-            # Grader: Did agent identify the bug in the right file?
             if action.verdict == "request_changes" and task['file'] in (action.comment or ""):
-                reward = 1.0
+                reward = 0.95 
+            else:
+                reward = 0.05
             observation = {"pr_description": "Review Submitted", "current_files": [task['file']]}
         
         if self.step_count >= 5: done = True
