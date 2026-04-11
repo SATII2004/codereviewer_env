@@ -1,7 +1,9 @@
-version: "1.0"
-name: "CodeReviewer-AI-Env"
-description: "A real-world code review environment for AI agents."
-entrypoint: "server.app:app"
-port: 7860
-env_vars:
-  TASK_ID: "easy"
+name: codereviewer-gym-v2
+version: 0.2.0
+description: "A tool-augmented RL gym for evaluating security and logic reasoning in code reviews."
+sdk: docker
+app_port: 7860
+base_path: /health
+tags: [reinforcement-learning, code-review, security, static-analysis]
+maintainer: "N Satish"
+task_ids: ["style_001", "bug_101", "sec_201"]

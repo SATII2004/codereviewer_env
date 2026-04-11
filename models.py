@@ -1,14 +1,14 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Dict, Any
 
 class CodeAction(BaseModel):
-    action_type: Literal["view_file", "submit_review"] = Field(..., description="Action to take")
-    file_path: Optional[str] = Field(None, description="Path to the file")
-    comment: Optional[str] = Field(None, description="Review feedback")
-    verdict: Optional[Literal["approve", "request_changes"]] = Field(None, description="Final PR status")
+    tool: Literal["ls", "read_file", "run_ruff", "run_bandit", "run_pytest", "submit_review"]
+    args: Optional[Dict[str, Any]] = None
+    verdict: Optional[Literal["approve", "request_changes"]] = None
+    comment: Optional[str] = None
 
 class CodeObservation(BaseModel):
-    file_content: Optional[str] = None
-    pr_description: str
-    current_files: List[str]
-    last_action_error: Optional[str] = None
+    observation: str
+    reward: float
+    done: bool
+    info: Dict[str, Any]

@@ -1,28 +1,20 @@
 import uvicorn
 from fastapi import FastAPI, Body
-from server.env import CodeReviewEnv
-from models import CodeAction
+from server.env import CodeReviewerGym
 
 app = FastAPI()
-env_instance = CodeReviewEnv()
+gym = CodeReviewerGym()
+
+@app.get("/health")
+async def health(): return {"status": "healthy"}
 
 @app.post("/reset")
 async def reset(data: dict = Body(default={})):
-    task_id = data.get("task_id", "easy")
-    obs = await env_instance.reset(task_id=task_id)
-    return {"observation": obs}
+    return {"observation": gym.reset(data.get("task_id"))}
 
 @app.post("/step")
-async def step(action: CodeAction):
-    obs, reward, done, info = await env_instance.step(action)
-    return {"observation": obs, "reward": reward, "done": done, "info": info}
+async def step(action: dict = Body(...)):
+    return gym.step(action)
 
-@app.get("/state")
-async def state():
-    return {"status": "running", "step": env_instance.step_count}
-
-def main():
-    uvicorn.run(app, host="0.0.0.0", port=7860)
-
-if __name__ == "__main__":
-    main()
+def main(): uvicorn.run(app, host="0.0.0.0", port=7860)
+if __name__ == "__main__": main()

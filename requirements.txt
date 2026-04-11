@@ -1,6 +1,8 @@
-fastapi
-uvicorn
-pydantic
-openenv-core
-openai
-python-multipart
+fastapi==0.109.0
+uvicorn==0.27.0
+pydantic==2.6.0
+openai==1.12.0
+httpx==0.26.0
+python-multipart==0.0.9
+uv==0.1.15
+hatchling==1.21.0

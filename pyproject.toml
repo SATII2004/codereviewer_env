@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "codereviewer-ai-env"
-version = "0.1.0"
-description = "A real-world code review environment for AI agents."
+name = "codereviewer-gym-v2"
+version = "0.2.0"
+description = "Advanced Code Review RL Gym"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
